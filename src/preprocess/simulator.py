@@ -27,28 +27,29 @@ class Simulator:
 
     def simulate(self):
         temp_file = self.image_name
+        antenna_name = self.simobserve_config.get('antenna', 'alma.out08.cfg').split('.cfg')[0]
         ms_file = f'{temp_file}/{temp_file}.{self.simobserve_config.get("antenna", "alma.out08.cfg").split(".cfg")[0]}.ms'
         if os.path.exists(os.path.join(self.output_folder, os.path.basename(ms_file))):
             shutil.rmtree(os.path.join(self.output_folder, os.path.basename(ms_file)))
 
         if os.path.exists(temp_file):
             shutil.rmtree(temp_file)  
-          
         simobserve(
             project=temp_file,
             skymodel=self.image,
             indirection = 'J2000 03h30m00 1d00m00', #0 y -90
+            inbright= '1Jy',
             incell = '0.04arcsec',
-            incenter = '300GHz',
-            inwidth = '2GHz',
+            incenter = '230GHz',
+            inwidth = '50MHz',
             setpointings = True,
             integration = '300s',
             mapsize = ['0.2arcsec','0.2arcsec'],
-            maptype = 'hexagonal',
+            maptype = 'ALMA',
             pointingspacing = '1arcsec',
             graphics = 'both',
             obsmode = 'int',
-            antennalist = self.simobserve_config.get('antennas', 'alma.out08.cfg'),
+            antennalist = self.simobserve_config.get('antenna', 'alma.out08.cfg'),
             totaltime = str(self.simobserve_config.get('totaltime', '12000')) + 's',
         )
         
@@ -63,6 +64,8 @@ class Simulator:
             sim.setnoise(simplenoise=str(noise) + 'Jy')
             sim.corrupt()
             sim.close()
+        else:
+            print("No noise added to the simulation.")
     
         
         if os.path.exists(ms_file):
