@@ -2,11 +2,11 @@
 
 This project is part of an undergraduate thesis focused on comparing reconstructed astronomical images using a neural network trained to determine which reconstruction is more accurate **without requiring a reference image**.
 
-## ⚙️ Requirements
+## Requirements
 
 - Python >= 3.10.12
 
-## 🧪 Installation
+## Installation
 
 ### 1. Clone this repository
 
