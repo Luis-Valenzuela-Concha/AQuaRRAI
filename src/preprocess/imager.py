@@ -24,20 +24,49 @@ class Imager:
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path, exist_ok=True)
 
-    def tclean(self, config: dict):
+    def tclean_hogbom(self, config: dict):
         from casatasks import tclean
 
-        if os.path.exists(f'{self.output_path}/tclean'):
-            os.system(f'rm -rf {self.output_path}/tclean')
+        imsize = config.get('imsize', 256)
+        cell = config.get('cell', '0.02arcsec')
+        niter = config.get('niter', 0)
+        weighting = config.get('weighting', 'natural')
+
+        if os.path.exists(f'{self.output_path}/tclean_hogbom_{niter}'):
+            os.system(f'rm -rf {self.output_path}/tclean_hogbom_{niter}')
 
         niter = config.get('niter', 0)
         tclean(
             vis = self.vis,
-            imsize = config.get('imsize', 256),
-            cell = config.get('cell', '0.04arcsec'),
+            imsize = imsize,
+            cell = cell,
             niter = niter,
-            weighting = config.get('weighting', 'natural'),
-            imagename= f'{self.output_path}/tclean_{niter}/tclean_{niter}',
+            weighting = weighting,
+            imagename= f'{self.output_path}/tclean_hogbom_{niter}/tclean_hogbom_{niter}',
         )
+    
+    def tclean_multiscale(self, config: dict):
+        from casatasks import tclean
+
+        imsize = config.get('imsize', 256)
+        cell = config.get('cell', '0.02arcsec')
+        niter = config.get('niter', 0)
+        weighting = config.get('weighting', 'natural')
+        scales = config.get('scales', [0,3,10,30])
+
+        if os.path.exists(f'{self.output_path}/tclean_multiscale_{niter}'):
+            os.system(f'rm -rf {self.output_path}/tclean_multiscale_{niter}')
+
+        tclean(
+            vis = self.vis,
+            imsize = imsize,
+            cell = cell,
+            niter = niter,
+            weighting = weighting,
+            deconvolver = 'multiscale',
+            scales = scales,
+            imagename= f'{self.output_path}/tclean_multiscale_{niter}/tclean_multiscale_{niter}',
+        )
+
     def gpuvmem(self, config: dict):
         print("GPU VMEM is not implemented yet. Please use tclean instead.")
