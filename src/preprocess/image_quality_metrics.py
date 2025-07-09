@@ -8,6 +8,8 @@ from math import log10
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from skimage.measure import shannon_entropy
+import cv2
 
 def normalize_image(data):
     """
@@ -41,6 +43,7 @@ class ImageQualityMetrics:
         data_image = data[:, :, 0, 0] if data.ndim > 2 else data
         data_image = normalize_image(data_image)
         data_image = data_image.T[::-1, :][::-1, :]
+        data_image = data_image.astype(np.float32)
         return data_image
         
     def __get_data_residual(self):
@@ -127,6 +130,41 @@ class ImageQualityMetrics:
         psnr = peak/rms
         return psnr
     
+    def sharpness(self) -> float:
+        if self.data_image is None:
+            raise ValueError("Image data is required to calculate sharpness.")
+        
+        gradient_x = cv2.Sobel(self.data_image, cv2.CV_64F, 1, 0, ksize=3)
+        gradient_y = cv2.Sobel(self.data_image, cv2.CV_64F, 0, 1, ksize=3)
+        gradient_magnitude = np.sqrt(gradient_x**2 + gradient_y**2)
+        sharpness_value = np.mean(gradient_magnitude)
+        return sharpness_value
+    
+    def median(self) -> float:
+        if self.data_image is None:
+            raise ValueError("Image data is required to calculate median.")
+        
+        median = cv2.medianBlur(self.data_image, ksize=3)
+        diff = np.abs(self.data_image.astype(np.float32) - median.astype(np.float32))
+        median_value = np.mean(diff)
+        return median_value
+    
+    def entropy(self) -> float:
+        if self.data_image is None:
+            raise ValueError("Image data is required to calculate entropy.")
+        
+        entropy_value = shannon_entropy(self.data_image)
+        return entropy_value
+    
+    def noise(self) -> float:
+        if self.data_image is None:
+            raise ValueError("Image data is required to calculate noise.")
+        
+        blur = cv2.GaussianBlur(self.data_image, (5, 5), 0)
+        noise_value = self.data_image.astype(np.float32) - blur.astype(np.float32)
+        noise_value = np.std(noise_value)
+        return noise_value
+
 
     def plot_images(self):
         titles = ['Reference', 'Reconstructed', 'Residual']
