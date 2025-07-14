@@ -4,7 +4,7 @@ This project is part of an undergraduate thesis focused on comparing reconstruct
 
 ## Requirements
 
-- Python >= 3.10.12
+- Python >= 3.11
 
 ## Installation
 
@@ -19,7 +19,7 @@ cd Memoria
 
 ```bash
 python -m venv venv
-source venv/bin/activate    # Linux/macOS
+source venv/bin/activate    # Linux
 ```
 
 ### 3. Install dependencies
