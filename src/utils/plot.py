@@ -4,8 +4,22 @@ from casatasks import casalog, tclean, exportfits
 import matplotlib.pyplot as plt
 import shutil
 from astropy.io import fits
+import numpy as np
 
 tclean_temp = 'temp_im'
+
+def to_2d(image_data):
+    image_data = np.squeeze(image_data)
+    
+    if image_data.ndim > 2:
+        image_data = image_data[0]
+
+    return image_data
+
+def fix_orientation(image):
+    image = np.rot90(image, k=1)
+    image = np.flipud(image)
+    return image
 
 def plot_image(image_path: str, zoom: int = 1, cmap: str = 'inferno', title = ''):
     image_name = image_path.split('/')[-1]
@@ -37,28 +51,32 @@ def plot_image(image_path: str, zoom: int = 1, cmap: str = 'inferno', title = ''
     fig, axes = plt.subplots(1, 3, figsize=(8, 4))
 
     # Plot image
-    if image_data.ndim == 2:
-        axes[0].imshow(image_data, origin='lower', cmap=cmap)
-    else:
-        axes[0].imshow(image_data[:, :, 0, 0], origin='lower', cmap=cmap)
-    axes[0].set_title(f'{image_name}.image' if not title else f'{title} (image)')
+    image_data = to_2d(image_data)
+    image_data = fix_orientation(image_data)
+
+    axes[0].imshow(image_data, origin='lower', cmap=cmap)
+    axes[0].set_title(f'Image')
     axes[0].axis('off')
 
     # Plot model
-    if model_data.ndim == 2:
-        axes[1].imshow(model_data, origin='lower', cmap=cmap)
-    else:
-        axes[1].imshow(model_data[:, :, 0, 0], origin='lower', cmap=cmap)
-    axes[1].set_title(f'{image_name}.model' if not title else f'{title} (model)')
+    model_data = to_2d(model_data)
+    model_data = fix_orientation(model_data)
+
+    axes[1].imshow(model_data, origin='lower', cmap=cmap)
+    axes[1].set_title('Model')
     axes[1].axis('off')
 
     # Plot residual
-    if residual_data.ndim == 2:
-        axes[2].imshow(residual_data, origin='lower', cmap=cmap)
-    else:
-        axes[2].imshow(residual_data[:, :, 0, 0], origin='lower', cmap=cmap)
-    axes[2].set_title(f'{image_name}.residual' if not title else f'{title} (residual)')
+    residual_data = to_2d(residual_data)
+    residual_data = fix_orientation(residual_data)
+
+    axes[2].imshow(residual_data, origin='lower', cmap=cmap)
+    axes[2].set_title(f'Residual')
     axes[2].axis('off')
+
+    if title:
+        fig.suptitle(title, fontsize=16)
+        plt.subplots_adjust(top=0.85)
 
     plt.tight_layout()
     plt.show()
