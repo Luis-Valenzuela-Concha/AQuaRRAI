@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import os
+from src.utils.casa_log_deletter import delete_casa_logs
 
 @dataclass
 class Imager:
@@ -26,6 +27,9 @@ class Imager:
 
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path, exist_ok=True)
+        delete_casa_logs()
+
+        
 
     def tclean_hogbom(self, config: dict):
         from casatasks import tclean

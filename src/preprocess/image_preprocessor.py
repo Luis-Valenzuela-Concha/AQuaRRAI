@@ -27,7 +27,7 @@ class ImagePreprocessor:
 
         return data_resized
 
-    def convert_to_fits(self, output_folder: str, output_name: str = None):
+    def convert_to_fits(self, output_folder: str, output_name: str = None, verbose: bool = False):
         # Build the FITS header
         delta = 1.0 / 3600
         header = fits.Header()
@@ -56,8 +56,9 @@ class ImagePreprocessor:
             
         hdu = fits.PrimaryHDU(self.image, header=header)
         hdu.writeto(output_file, overwrite=True)
-        
-        print(f"Image converted to FITS and saved as {output_file}")
+        if verbose:
+            print(f"Image converted to FITS and saved as {output_file}")
+
 
     def show_image(self):
         plt.imshow(self.image, cmap='inferno')

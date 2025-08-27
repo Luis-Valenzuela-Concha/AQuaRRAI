@@ -94,8 +94,13 @@ venv.bak/
 # PyPI configuration file
 .pypirc
 
-data/
+data/*
 *.log
 trash
 temp
 .DS_Store
+
+venv*
+!notebooks/data
+!data/eso_images_names.csv
+data2/*

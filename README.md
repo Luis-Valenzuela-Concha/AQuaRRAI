@@ -1,6 +1,15 @@
-# Automatic Quality Comparison of Reconstructed Astronomical Images
+# Automatic Quality Ranking of Reconstructed Astronomical Images (AQuaRRAI)
 
-This project is part of an undergraduate thesis focused on comparing reconstructed astronomical images using a neural network trained to determine which reconstruction is more accurate **without requiring a reference image**.
+AQuaRRAI is modular system to simulate, reconstruct, evaluate, and rank the quality of reconstructed astronomical images **without requiring a reference image**, with a focus on radio interferometry. It includes CNN models with and without group context that predict SSIM or PSNR values, enabling the ranking of reconstructions from the same observation.
+
+# Key Features
+
+- End-to-end pipeline: from preprocessing → simulation → reconstruction → metric evaluation → ranking.
+- Reference-free evaluation: CNN models predict SSIM / PSNRr values without a ground-truth image.
+- Flexible modules: plug-in simulators, imagers (e.g. CLEAN, MEM), and quality metrics.
+- Two ranking modes:
+  - Without context: per-image prediction.
+  - With context: incorporates group-level information for more consistent rankings.
 
 ## Requirements
 
@@ -12,24 +21,25 @@ This project is part of an undergraduate thesis focused on comparing reconstruct
 
 ```bash
 git clone https://github.com/Luis-Valenzuela-Concha/Memoria.git
-cd Memoria
+cd AQUARRAI
 ```
 
-### 2. Create and activate a virtual environment
+### 2. Create virtual environments
 
 ```bash
-python -m venv venv
-source venv/bin/activate    # Linux/macOS
+make install-base     # base environment (Linux/macOS)
+make install-pyralysis   # optional, extended environment (Linux — includes imaging via pyralysis)
 ```
 
-### 3. Install dependencies
+### 3. Activate a virtual environment
 
 ```bash
-pip install -r requirements.txt
+source venv_base/bin/activate     # activate base environment
+source venv_pyralysis/bin/activate  # activate pyralysis environment (if reconstructing with pyralysis)
 ```
 
 ## Author
 
-Luis Valenzuela Concha <br>
-Estudiante de Ingeniería Civil Informática <br>
-Universidad de Concepción
+Luis Valenzuela, Computer Engineering student, University of Concepción.
+
+This work was submitted in fulfillment of degree requirements.

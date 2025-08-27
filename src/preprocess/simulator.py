@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import os
 from casatasks import simobserve
 import shutil
+from src.utils.casa_log_deletter import delete_casa_logs
 
 @dataclass
 class Simulator:
@@ -24,6 +25,7 @@ class Simulator:
         self.simobserve_config = simobserve_config
         self.output_folder = os.path.abspath(output_folder)
         self.output_name = output_name if output_name else f'{self.image_name}_visibilities'
+        delete_casa_logs()
 
     def simulate(self):
         if not os.path.exists(self.output_folder):
@@ -43,11 +45,13 @@ class Simulator:
         arcsec = str(self.simobserve_config.get('arcsec', 0.02)) + 'arcsec'
         antenna = self.simobserve_config.get('antenna', 'alma.out08.cfg')
         total_time = str(self.simobserve_config.get('totaltime', 12000)) + 's'
+        indirection = self.simobserve_config.get('indirection', 'J2000 03h30m00 1d00m00')
+        verbose = self.simobserve_config.get('verbose', False)
 
         simobserve(
             project=temp_file,
             skymodel=self.image,
-            indirection = 'J2000 03h30m00 1d00m00', #0 y -90
+            indirection = indirection, #0 y -90
             inbright= '1Jy',
             incell = arcsec,
             incenter = '230GHz',
@@ -60,7 +64,8 @@ class Simulator:
             graphics = 'both',
             obsmode = 'int',
             antennalist = antenna,
-            totaltime = total_time
+            totaltime = total_time,
+            verbose = verbose
         )
         
         noise = str(self.simobserve_config.get('noise', ''))
