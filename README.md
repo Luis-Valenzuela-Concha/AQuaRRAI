@@ -6,7 +6,7 @@ AQuaRRAI is modular system to simulate, reconstruct, evaluate, and rank the qual
 
 - End-to-end pipeline: from preprocessing → simulation → reconstruction → metric evaluation → ranking.
 - Reference-free evaluation: CNN models predict SSIM / PSNRr values without a ground-truth image.
-- Flexible modules: plug-in simulators, imagers (e.g. CLEAN, MEM), and quality metrics.
+- Flexible modules: plug-in simulators, imagers and quality metrics.
 - Two ranking modes:
   - Without context: per-image prediction.
   - With context: incorporates group-level information for more consistent rankings.
@@ -20,7 +20,7 @@ AQuaRRAI is modular system to simulate, reconstruct, evaluate, and rank the qual
 ### 1. Clone this repository
 
 ```bash
-git clone https://github.com/Luis-Valenzuela-Concha/Memoria.git
+git clone https://github.com/Luis-Valenzuela-Concha/AQUARRAI.git
 cd AQUARRAI
 ```
 
