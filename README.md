@@ -13,7 +13,7 @@ AQuaRRAI is modular system to simulate, reconstruct, evaluate, and rank the qual
 
 ## Requirements
 
-- Python >= 3.10.12
+- Python >= 3.11
 
 ## Installation
 
