@@ -7,32 +7,30 @@ from src.utils.casa_log_deletter import delete_casa_logs
 @dataclass
 class Simulator:
     image: str
-    simobserve_config: dict
     output_folder: str
 
     def __init__(
             self, 
             image: str, 
-            simobserve_config: dict, 
             output_folder: str = '../data/processed/',
             output_name: str = None
         ):
-        if not isinstance(simobserve_config, dict):
-            raise ValueError("Config must be a dictionary.")
 
         self.image = os.path.abspath(image)
         self.image_name = os.path.basename(self.image).split('.')[0]
-        self.simobserve_config = simobserve_config
         self.output_folder = os.path.abspath(output_folder)
         self.output_name = output_name if output_name else f'{self.image_name}_visibilities'
         delete_casa_logs()
 
-    def simulate(self):
+    def simobserve_simulate(self, simobserve_config: dict = None):
+        if not isinstance(simobserve_config, dict):
+            raise ValueError("Config must be a dictionary.")
+        
         if not os.path.exists(self.output_folder):
             os.makedirs(self.output_folder, exist_ok=True)
 
         temp_file = self.image_name
-        antenna_name = self.simobserve_config.get('antenna', 'alma.out08.cfg').split('.cfg')[0]
+        antenna_name = simobserve_config.get('antenna', 'alma.out08.cfg').split('.cfg')[0]
         
         ms_file = f'{temp_file}/{temp_file}.{antenna_name}.ms'
 
@@ -42,11 +40,11 @@ class Simulator:
         if os.path.exists(temp_file):
             shutil.rmtree(temp_file)
 
-        arcsec = str(self.simobserve_config.get('arcsec', 0.02)) + 'arcsec'
-        antenna = self.simobserve_config.get('antenna', 'alma.out08.cfg')
-        total_time = str(self.simobserve_config.get('totaltime', 12000)) + 's'
-        indirection = self.simobserve_config.get('indirection', 'J2000 03h30m00 1d00m00')
-        verbose = self.simobserve_config.get('verbose', False)
+        arcsec = str(simobserve_config.get('arcsec', 0.02)) + 'arcsec'
+        antenna = simobserve_config.get('antenna', 'alma.out08.cfg')
+        total_time = str(simobserve_config.get('totaltime', 12000)) + 's'
+        indirection = simobserve_config.get('indirection', 'J2000 03h30m00 1d00m00')
+        verbose = simobserve_config.get('verbose', False)
 
         simobserve(
             project=temp_file,
@@ -68,7 +66,7 @@ class Simulator:
             verbose = verbose
         )
         
-        noise = str(self.simobserve_config.get('noise', ''))
+        noise = str(simobserve_config.get('noise', ''))
         if noise:
             from casatools import simulator
             sim = simulator()

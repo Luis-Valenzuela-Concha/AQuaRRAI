@@ -92,11 +92,10 @@ class PipelineHandler:
             for sim_number, simobserve_config in enumerate(sim_conditions):
                 simulator = Simulator(
                     image=gt_path, 
-                    simobserve_config=simobserve_config,
                     output_folder= proccesed_folder / image / f'sim{sim_number + 1}',
                     output_name='visibilities'
                 )
-                simulator.simulate()
+                simulator.simobserve_simulate(simobserve_config=simobserve_config)
             
         print("Simulation of observations completed.")
         
