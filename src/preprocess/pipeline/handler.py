@@ -100,7 +100,7 @@ class PipelineHandler:
         print("Simulation of observations completed.")
         
     def reconstruct_images(self, rec_conditions):
-        from src.preprocess.imager import Imager
+        from src.imager.tclean import TCleanImager
         
         processed_folder = self.data_folder / 'processed'
         proccesed_images = os.listdir(processed_folder)
@@ -115,16 +115,11 @@ class PipelineHandler:
             sim_folders.sort()
 
             for sim in sim_folders:
-                hogbom_config = rec_conditions.get('hogbom_config', {})
-                multiscale_config = rec_conditions.get('multiscale_config', {})
-                mem_config = rec_conditions.get('mem_config', {})
-
                 sim_folder = processed_folder / image / sim
                 visibilities = sim_folder / 'visibilities.ms'
-                imager = Imager(vis=str(visibilities), output_path=str(sim_folder))
-                imager.tclean_hogbom(config=hogbom_config)
-                imager.tclean_multiscale(config=multiscale_config)
-                imager.tclean_mem(config=mem_config)
+                imager = TCleanImager(vis=str(visibilities), output_folder=str(sim_folder))
+                for config in rec_conditions:
+                    imager.reconstruct(config=rec_conditions[config])
              
     def generate_data_description(self):
         id_file = self.data_folder / 'id_raw.csv'

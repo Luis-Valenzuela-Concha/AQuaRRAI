@@ -6,7 +6,6 @@ astroquery==0.4.10
 asttokens==3.0.0
 astunparse==1.6.3
 backports.tarfile==1.2.0
-beautifulsoup4==4.13.4
 casaconfig==1.3.1
 casatasks==6.7.0.31
 casatools==6.7.0.31

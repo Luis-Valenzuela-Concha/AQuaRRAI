@@ -47,6 +47,10 @@ def plot_image(image_path: str, cmap: str = "inferno", title: str = ""):
         panel_title = f"{image_name}.{key}" if not title else f"{title} ({key})"
         __plot_panel(ax, arr, cmap, panel_title)
 
+    if title:
+        fig.suptitle(title, fontsize=16)
+        plt.subplots_adjust(top=0.85)
+
     plt.tight_layout()
     plt.show()
 
